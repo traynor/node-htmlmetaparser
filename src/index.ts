@@ -608,7 +608,7 @@ export class Handler {
         } else if (propertyAttr.startsWith("al:")) {
           set(this.result, ["applinks", propertyAttr /*propertyAttr.substr(3)*/], contentAttr);
         // catch mix of Twitter and Open Graph tags
-        } else if (propertyAttr.startsWith("og:") && (this.result.twitter && Object.keys(this.result.twitter).length)) {
+        } else if (propertyAttr.startsWith("og:")) {
           set(this.result, ["twitter", propertyAttr /*propertyAttr.substr(3)*/], contentAttr);
         }
       }
