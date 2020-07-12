@@ -17,6 +17,8 @@ const RDF_NAME_CHAR_REGEXP = new RegExp(
   `^[${RDF_VALID_NAME_START_CHAR_RANGE}\\-\\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$`
 );
 
+let optionsCompact = false;
+
 /**
  * Keep track of vocabulary prefixes.
  */
@@ -280,6 +282,7 @@ export interface Result {
 
 export interface Options {
   url: string;
+  compact: boolean
 }
 
 export class Handler {
@@ -305,7 +308,9 @@ export class Handler {
   constructor(
     protected callback: (err: Error | null, result: Result) => void,
     protected options: Options
-  ) {}
+  ) {
+    optionsCompact = this.options.compact;
+  }
 
   onend() {
     const oembedProvider = providers.match(this.options.url);
@@ -961,13 +966,29 @@ function addJsonldProperty(obj: any, key: string | string[], value: any) {
   if (!key) {
     return;
   }
-
+  // compact schema.org context
+  if(optionsCompact) {
+    if (obj['@context']) {
+        if (typeof obj['@context'] === 'string' && obj['@context'].includes('schema.org')) {
+        }
+        if (obj['@context']['@vocab'] && obj['@context']['@vocab'].includes('schema.org')) {
+            obj['@context'] = obj['@context']['@vocab'];
+        }
+    }
+  }
   if (Array.isArray(key)) {
     for (const k of key) {
       addJsonldProperty(obj, k, value);
     }
   } else {
-    obj[key] = merge(obj[key], value);
+    // compact all properties
+    if(optionsCompact) {
+      obj[key] = typeof value === 'string'
+        ? value
+        : value['@value'] || value['@type'] || value;
+    } else {
+      obj[key] = merge(obj[key], value);
+    }
   }
 }
 
