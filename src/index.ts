@@ -604,9 +604,12 @@ export class Handler {
       // Catch some bad implementations of Twitter metadata.
       if (propertyAttr && contentAttr) {
         if (propertyAttr.startsWith("twitter:")) {
-          set(this.result, ["twitter", propertyAttr.substr(8)], contentAttr);
+          set(this.result, ["twitter", propertyAttr /*propertyAttr.substr(8)*/], contentAttr);
         } else if (propertyAttr.startsWith("al:")) {
-          set(this.result, ["applinks", propertyAttr.substr(3)], contentAttr);
+          set(this.result, ["applinks", propertyAttr /*propertyAttr.substr(3)*/], contentAttr);
+        // catch mix of Twitter and Open Graph tags
+        } else if (propertyAttr.startsWith("og:") && (this.result.twitter && Object.keys(this.result.twitter).length)) {
+          set(this.result, ["twitter", propertyAttr /*propertyAttr.substr(3)*/], contentAttr);
         }
       }
 
@@ -621,13 +624,13 @@ export class Handler {
          * - HTML
          */
         if (name.startsWith("twitter:")) {
-          set(this.result, ["twitter", name.substr(8)], contentAttr);
+          set(this.result, ["twitter", name/*.substr(8)*/], contentAttr);
         } else if (name.startsWith("dc.")) {
-          set(this.result, ["dublincore", name.substr(3)], contentAttr);
+          set(this.result, ["dublincore", name/*.substr(3)*/], contentAttr);
         } else if (name.startsWith("dcterms.")) {
-          set(this.result, ["dublincore", name.substr(8)], contentAttr);
+          set(this.result, ["dublincore", name/*.substr(8)*/], contentAttr);
         } else if (name.startsWith("sailthru.")) {
-          set(this.result, ["sailthru", name.substr(9)], contentAttr);
+          set(this.result, ["sailthru", name/*.substr(9)*/], contentAttr);
         } else if (
           name === "date" ||
           name === "keywords" ||
