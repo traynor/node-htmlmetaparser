@@ -282,7 +282,7 @@ export interface Result {
 
 export interface Options {
   url: string;
-  compact: boolean
+  compact?: boolean;
 }
 
 export class Handler {
@@ -309,7 +309,7 @@ export class Handler {
     protected callback: (err: Error | null, result: Result) => void,
     protected options: Options
   ) {
-    optionsCompact = this.options.compact;
+    optionsCompact = this.options.compact || false;
   }
 
   onend() {
